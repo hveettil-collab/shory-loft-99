@@ -9,7 +9,8 @@ Hardware, hands and camera are never regenerated — only pixels inside the disp
 | Frame extraction (360/360) | done |
 | Display-quad detection, clean frames (black-bezel hole) | done — 156 frames |
 | Laptop-mode upper panel (content-colour detector) | done — 56/60 frames |
-| Anchor-based SIFT+RANSAC propagation | first pass — 249 frames; drift where the hand crosses the screen (f17–25) needs skin-excluded feature masks |
+| Anchor-based SIFT+RANSAC propagation (skin-excluded) | 248 frames |
+| Bezel-ring KLT tracker for content-changing stretches | f1–31 verified (hand pass + iOS blur); f33–36 is the unfold, needs per-panel tracking |
 | Fold transitions (f37–50, f139–156, f187–192, f286–300) | not started — need per-panel tracking |
 | Finger/hand mattes | not started |
 | Removal of source captions ("Hello.", "Hello, hello.", "Apple TV…", Apple-logo "iPhone Duo") | not started |

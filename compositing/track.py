@@ -10,6 +10,14 @@ def load(i):
     if i not in cache:
         cache[i] = cv2.cvtColor(cv2.imread(f"{frames_dir}/f{i:03d}.png"), cv2.COLOR_BGR2GRAY)
     return cache[i]
+skin_cache = {}
+def skin(i):
+    if i not in skin_cache:
+        ycc = cv2.cvtColor(cv2.imread(f"{frames_dir}/f{i:03d}.png"), cv2.COLOR_BGR2YCrCb)
+        sk = cv2.inRange(ycc, (40, 138, 80), (240, 175, 125))
+        sk = cv2.morphologyEx(sk, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
+        skin_cache[i] = cv2.dilate(sk, np.ones((15, 15), np.uint8))
+    return skin_cache[i]
 def conf(i):
     c = det.get(str(i), [])
     return c and c[0]["fill"] > 0.9
@@ -17,6 +25,7 @@ def feats(i, quad, grow=1.12):
     g = load(i); m = np.zeros_like(g)
     q = np.array(quad, np.float32); c = q.mean(0)
     cv2.fillConvexPoly(m, ((q - c) * grow + c).astype(np.int32), 255)
+    m[skin(i) > 0] = 0  # never let hands/fingers drive the screen homography
     return sift.detectAndCompute(g, m)
 def homog(a, qa, b, qb_guess):
     ka, da = feats(a, qa); kb, db = feats(b, qb_guess, 1.35)
